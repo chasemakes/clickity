@@ -67,11 +67,13 @@ impl Shortcuts {
             let _ = events.unbounded_send(event);
         }));
 
+        // Each binding starts from its saved accelerator rather than its default, so a
+        // pair that uses the other's default (such as swapped F6 and F7) restores intact.
         let mut shortcuts = Self {
             manager: GlobalHotKeyManager::new()
                 .map_err(|error| format!("Global shortcuts are unavailable: {error}")),
-            run: Binding::new(DEFAULT_RUN_SHORTCUT),
-            capture: Binding::new(DEFAULT_CAPTURE_SHORTCUT),
+            run: Binding::new(run),
+            capture: Binding::new(capture),
         };
         shortcuts.restore(ShortcutKind::Run, run);
         shortcuts.restore(ShortcutKind::Capture, capture);
