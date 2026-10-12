@@ -4,9 +4,9 @@
 
 ## Platform
 
-web
+desktop
 
-Clickity is delivered as a cross-platform desktop application through Tauri. Its interface uses a webview, while timing, global shortcuts, cursor access, and native mouse input are handled in Rust.
+Clickity is delivered as a cross-platform desktop application written in Rust. Its interface is rendered natively with GPUI and GPUI Kit, in the same process that handles timing, global shortcuts, cursor access, and native mouse input.
 
 ## Users
 
@@ -38,7 +38,7 @@ Clickity is a modern, cross-platform replacement for OP Auto Clicker. Unlike too
 - Persists the most recent preferences locally but always launches in an idle state.
 - Provides responsive cancellation even during long intervals.
 - Targets Windows, macOS, and Linux, including Linux Wayland sessions.
-- Uses the operating system webview through Tauri 2 rather than bundling a browser runtime.
+- Renders its interface on the GPU with GPUI rather than through a webview or bundled browser runtime.
 - A normally launched Windows build cannot send clicks into applications running as administrator.
 - macOS requires Accessibility permission to synthesize mouse input.
 - Release builds are produced separately for each target operating system; production Windows and macOS releases require their respective signing workflows.
@@ -50,15 +50,15 @@ Clickity is a modern, cross-platform replacement for OP Auto Clicker. Unlike too
 - Tagline: “Clicks, right on cue.”
 - The product voice is concise, approachable, and safety-conscious.
 - The visual identity must feel distinctly modern and must not closely imitate OP Auto Clicker.
-- The existing product mark is stored at `src/assets/clickity-mark.svg`; platform icons are stored under `src-tauri/icons/`.
+- The existing product mark is stored at `assets/icons/clickity-mark.svg`; platform icons are stored under `assets/app-icons/`.
 - The project is distributed under the MIT License.
 
 ## Evidence on Hand
 
 - `README.md` documents the current product proposition, feature set, operating instructions, platform notes, development workflow, and safety guidance.
-- `index.html`, `src/main.ts`, `src/settings.ts`, and `src/types.ts` contain the working interface, validation, persistence, runtime feedback, and user-facing terminology.
-- `src-tauri/src/engine.rs`, `src-tauri/src/model.rs`, and `src-tauri/src/lib.rs` implement native input, timing, cancellation, cursor capture, platform detection, and global shortcuts.
-- `src-tauri/tauri.conf.json` records the desktop window and bundle configuration.
+- `src/app.rs`, `src/ui.rs`, and `src/settings.rs` contain the working interface, validation, persistence, runtime feedback, and user-facing terminology.
+- `src/engine.rs`, `src/model.rs`, and `src/shortcuts.rs` implement native input, timing, cancellation, cursor capture, and global shortcuts.
+- `src/app.rs` records the desktop window configuration; `Cargo.toml` records the packaging configuration.
 - Fixed-position capture is implemented as an explicit `F7` confirmation flow, independent of the configurable start/stop shortcut.
 - Linux input builds enable both Wayland and X11 backends. Exact permission prompts and available input capabilities remain compositor-controlled and are reported honestly in the interface and README.
 - No testimonials, customer logos, usage benchmarks, packaged-download claims, or other market proof are currently present and must not be fabricated.

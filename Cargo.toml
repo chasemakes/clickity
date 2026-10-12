@@ -1,0 +1,45 @@
+[package]
+name = "clickity"
+version = "0.1.0"
+description = "A lightweight, cross-platform autoclicker"
+authors = ["Clickity contributors"]
+edition = "2021"
+# GPUI Kit's documented minimum, set by its oo7 dependency.
+rust-version = "1.92"
+license = "MIT"
+
+[dependencies]
+gpui-kit = "0.7.1"
+global-hotkey = "0.8.0"
+enigo = { version = "0.6.1", default-features = false, features = ["wayland", "x11rb"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "7"
+futures = "0.3"
+
+# Installers are built with cargo-packager: `cargo packager --release`.
+[package.metadata.packager]
+product-name = "Clickity"
+identifier = "com.clickity.desktop"
+category = "Utility"
+long-description = "Clickity is a small, precise autoclicker with configurable timing, mouse buttons, repeat modes, cursor positions, and global start/stop and position-capture shortcuts."
+license-file = "LICENSE"
+icons = [
+  "assets/app-icons/32x32.png",
+  "assets/app-icons/64x64.png",
+  "assets/app-icons/128x128.png",
+  "assets/app-icons/icon.png",
+  "assets/app-icons/icon.icns",
+  "assets/app-icons/icon.ico",
+]
+before-packaging-command = "cargo build --release"
+binaries-dir = "target/release"
+out-dir = "target/packages"
+binaries = [{ path = "clickity", main = true }]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

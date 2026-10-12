@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/header/grid.svg?title=Clickity&amp;subtitle=Clicks%2C+right+on+cue.&amp;logo=tauri&amp;align=center&amp;theme=violet&amp;mode=dark" />
-    <img src="https://shieldcn.dev/header/grid.svg?title=Clickity&amp;subtitle=Clicks%2C+right+on+cue.&amp;logo=tauri&amp;align=center&amp;theme=violet&amp;mode=light" alt="Clickity — Clicks, right on cue." />
+    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/header/grid.svg?title=Clickity&amp;subtitle=Clicks%2C+right+on+cue.&amp;logo=rust&amp;align=center&amp;theme=violet&amp;mode=dark" />
+    <img src="https://shieldcn.dev/header/grid.svg?title=Clickity&amp;subtitle=Clicks%2C+right+on+cue.&amp;logo=rust&amp;align=center&amp;theme=violet&amp;mode=light" alt="Clickity — Clicks, right on cue." />
   </picture>
 </p>
 
@@ -10,14 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="package.json"><img src="https://shieldcn.dev/badge/version-0.1.0-7c3aed.svg?variant=secondary&amp;logo=false" alt="Version 0.1.0" /></a>
-  <a href="https://v2.tauri.app/"><img src="https://shieldcn.dev/badge/Tauri-2-24c8db.svg?variant=secondary&amp;logo=tauri" alt="Built with Tauri 2" /></a>
+  <a href="Cargo.toml"><img src="https://shieldcn.dev/badge/version-0.1.0-7c3aed.svg?variant=secondary&amp;logo=false" alt="Version 0.1.0" /></a>
+  <a href="https://gpui-kit.com/"><img src="https://shieldcn.dev/badge/GPUI_Kit-0.7-24c8db.svg?variant=secondary&amp;logo=rust" alt="Built with GPUI Kit 0.7" /></a>
   <a href="https://github.com/chasebailly/clickity/stargazers"><img src="https://shieldcn.dev/github/stars/chasebailly/clickity.svg?variant=secondary" alt="GitHub stars" /></a>
   <a href="https://github.com/chasebailly/clickity/commits/main"><img src="https://shieldcn.dev/github/last-commit/chasebailly/clickity.svg?variant=secondary" alt="Last commit" /></a>
   <a href="LICENSE"><img src="https://shieldcn.dev/badge/license-MIT-22c55e.svg?variant=secondary&amp;logo=false" alt="MIT license" /></a>
 </p>
 
-Clickity is a small, cross-platform desktop app built with Tauri 2, vanilla TypeScript, and Rust. It uses the operating system's webview instead of shipping an entire browser runtime, while Rust handles timing, global shortcuts, and native mouse input.
+Clickity is a small, cross-platform desktop app written entirely in Rust. Its interface is drawn on the GPU with [GPUI](https://www.gpui.rs/) and [GPUI Kit](https://gpui-kit.com/), with no webview or browser runtime, and the same process handles timing, global shortcuts, and native mouse input.
 
 > [!IMPORTANT]
 > Clickity generates real mouse input. Test new configurations somewhere harmless, keep the stop shortcut in mind, and only use automation where you have permission.
@@ -33,7 +33,7 @@ Clickity is a small, cross-platform desktop app built with Tauri 2, vanilla Type
 - **Rebindable shortcuts** — change the start/stop and position-capture shortcuts from the settings dialog in the title bar.
 - **Persistent preferences** — restore your last configuration on launch while always starting safely in an idle state.
 - **Responsive cancellation** — stop immediately, even while waiting through a long interval.
-- **Clear feedback** — see inline validation, live click progress, platform notices, and native errors.
+- **Clear feedback** — see inline validation, live click progress, and native errors.
 
 ## Getting started
 
@@ -41,28 +41,28 @@ Clickity does not have packaged downloads yet. Run it from source with the steps
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 18+
-- A current stable [Rust toolchain](https://www.rust-lang.org/tools/install)
-- The [Tauri 2 prerequisites](https://v2.tauri.app/start/prerequisites/) for your operating system
+- [Rust](https://www.rust-lang.org/tools/install) 1.92 or later
+- **macOS:** macOS 15 or later and the Xcode Command Line Tools (`xcode-select --install`)
+- **Windows:** Windows 10 or later, Visual Studio 2022 Build Tools with the *Desktop development with C++* workload, the MSVC Rust toolchain, and CMake on `PATH`
+- **Linux:** a Wayland or X11 session with a working Vulkan driver, plus the development packages below
 
 On Debian or Ubuntu, install the native dependencies with:
 
 ```bash
 sudo apt update
-sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file \
-  libssl-dev libayatana-appindicator3-dev librsvg2-dev libxkbcommon-dev libxdo-dev
+sudo apt install -y gcc g++ clang pkg-config libfontconfig-dev libwayland-dev \
+  libxkbcommon-x11-dev libx11-xcb-dev libssl-dev libzstd-dev libvulkan1
 ```
 
-Clone the repository, install dependencies, and launch the desktop app:
+Other distributions need the equivalent packages. These requirements come from the [GPUI Kit installation guide](https://gpui-kit.com/docs/installation).
+
+Clone the repository and launch the desktop app:
 
 ```bash
 git clone https://github.com/chasebailly/clickity.git
 cd clickity
-bun install
-bun run tauri dev
+cargo run
 ```
-
-If you prefer npm, replace the last two commands with `npm install` and `npm run tauri dev`.
 
 ## Using Clickity
 
@@ -73,12 +73,14 @@ If you prefer npm, replace the last two commands with `npm install` and `npm run
 
 The first click occurs after one complete interval. Starting **Follow cursor** from the window adds a three-second countdown so you can move away from the Start button; starting with the global shortcut begins immediately. The capture shortcut stays registered for the whole session. Both shortcuts are rebindable from the settings dialog, and neither can be assigned the other's combination. Capture is ignored while a click run is active, since the settings are locked then.
 
+Preferences are saved to `settings.json` in a `clickity` folder inside your configuration directory: `~/.config` on Linux, `~/Library/Application Support` on macOS, and `%APPDATA%` on Windows.
+
 ## Platform support
 
 | Platform | Status | Notes |
 | --- | --- | --- |
 | Windows | Supported | A normally launched app cannot click inside applications running as administrator. Mixed-DPI, multi-monitor setups should be verified manually. |
-| macOS | Supported | Grant Clickity **Accessibility** permission when macOS asks so it can synthesize mouse input. |
+| macOS | Supported | Grant Clickity **Accessibility** permission when macOS asks so it can synthesize mouse input. The window keeps the native macOS window buttons. |
 | Linux (X11) | Supported | Clickity currently uses the X11 input backend. |
 | Linux (Wayland) | Supported | Compositors control global shortcuts and synthetic input; permission prompts and capability errors vary by desktop. |
 
@@ -90,32 +92,35 @@ The main project commands are:
 
 | Command | Purpose |
 | --- | --- |
-| `bun run tauri dev` | Run the desktop app with frontend hot reload |
-| `bun run build` | Type-check and build the web frontend |
-| `bun run check` | Build the frontend and run `cargo check` |
-| `bun run test` | Run the Rust test suite with a fake mouse driver |
-| `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings` | Lint the Rust code |
-| `bun run tauri build` | Produce a release bundle for the current platform |
+| `cargo run` | Run the desktop app |
+| `cargo test` | Run the test suite with a fake mouse driver |
+| `cargo clippy --all-targets -- -D warnings` | Lint the code |
+| `cargo packager --release` | Produce installers for the current platform |
 
-Release artifacts are written to `src-tauri/target/release/bundle/`. Build on each target operating system; production Windows and macOS releases should also be signed, with macOS builds notarized.
+Packaging uses [cargo-packager](https://github.com/crabnebula-dev/cargo-packager) (`cargo install cargo-packager --locked`), configured under `[package.metadata.packager]` in `Cargo.toml`. Installers are written to `target/packages/`. Build on each target operating system; production Windows and macOS releases should also be signed, with macOS builds notarized.
 
 ## How it works
 
-The TypeScript frontend owns the form, local settings, validation, countdowns, and status display. The Rust backend owns configuration validation, global shortcut registration, cursor access, click scheduling, cancellation, and native input simulation.
+The window is a single GPUI view (`src/app.rs`) that owns the form, saved settings, validation, the start countdown, shortcut recording, and status display. Its controls are built from GPUI Kit's unstyled primitives and styled with the palette in `DESIGN.md`; the settings dialog and text inputs come from GPUI Kit's component library. Global shortcuts are registered directly with the [`global-hotkey`](https://crates.io/crates/global-hotkey) crate, and mouse input goes through [`enigo`](https://crates.io/crates/enigo).
 
-The click loop waits on an interruptible channel instead of sleeping. That design keeps **Stop** responsive even when the configured interval is several hours. Rust tests use a fake mouse driver and never generate real input.
+The click engine runs on its own thread and reports each state change to the view over a channel. The click loop waits on an interruptible channel instead of sleeping, which keeps **Stop** responsive even when the configured interval is several hours. Tests use a fake mouse driver and never generate real input.
 
 ## Project structure
 
 ```text
 clickity/
-├── src/                 # TypeScript UI, settings, styles, and shared types
-├── src-tauri/
-│   ├── src/             # Rust commands, click engine, and data model
-│   ├── capabilities/    # Tauri permissions
-│   └── tauri.conf.json  # Window, bundle, and build configuration
-├── index.html           # Application shell
-└── package.json         # Frontend dependencies and project scripts
+├── src/
+│   ├── main.rs        # App startup and window
+│   ├── app.rs         # Main window, settings dialog, and run control
+│   ├── ui.rs          # Shared controls: segmented rails, buttons, keycaps
+│   ├── engine.rs      # Click loop and native mouse driver
+│   ├── model.rs       # Click configuration and runtime state
+│   ├── settings.rs    # Saved preferences and validation
+│   ├── shortcuts.rs   # Global shortcuts and shortcut recording
+│   ├── theme.rs       # Palette and fonts
+│   └── assets.rs      # Embedded icons and fonts
+├── assets/            # Fonts, UI icons, and app icons
+└── Cargo.toml         # Dependencies and packaging configuration
 ```
 
 ## Contributing
@@ -123,9 +128,8 @@ clickity/
 Bug reports and focused pull requests are welcome. Before opening a pull request, run:
 
 ```bash
-bun run check
-bun run test
-cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+cargo test
+cargo clippy --all-targets -- -D warnings
 ```
 
 Changes involving native input should be tested on every affected operating system. Keep automated tests behind the fake mouse driver so the test suite never clicks the user's desktop.
